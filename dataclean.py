@@ -2,7 +2,7 @@ from os import scandir
 import pandas as pd
 import datetime
 import re
-
+import os
 
 datafilespath='./data/few'
 
@@ -14,7 +14,7 @@ def main():
 
     for file_name in sorted(listOfFiles):
         pattern = re.compile("^(malagabici\-)[0-9]+\.csv$")
-        if pattern.match(file_name):
+        if pattern.match(file_name) and os.path.getsize(datafilespath+"/"+file_name) >0:
             timestamp = datetime.datetime.fromtimestamp(int(file_name[11:21]))
             weekday = 'WD'
             if timestamp.weekday() == 5:
