@@ -4,7 +4,7 @@ import datetime
 import re
 import os
 
-datafilespath='./data/few'
+datafilespath='./data'
 
 def main():
     listOfFiles =[arch.name for arch
@@ -24,7 +24,8 @@ def main():
             print(timestamp)
             dockings_historic = pd.read_csv(datafilespath+"/"+file_name,index_col=1,delimiter=',', encoding='utf-8')
             dockings_historic["TIPO_DIA"] = weekday
-            dockings_historic["TIMESTAMP"] = timestamp.strftime("%c")
+            dockings_historic["TIMESTAMP"] = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            print(dockings_historic["TIMESTAMP"])
             hours = timestamp.hour
             minutes = "30"
             if timestamp.minute > 45:
@@ -33,12 +34,10 @@ def main():
             elif timestamp.minute <= 15:
                 minutes = "00"
             myroundtime = '{:02d}'.format(hours) +":"+ minutes
-            all_stations["HORA"] = myroundtime
+            dockings_historic["HORA"] = myroundtime
             all_stations = pd.concat([all_stations,dockings_historic])
 
-
-
-    all_stations["OCUPACION"] = list(map(lambda o,l: o/(o+l),all_stations['NUM_OCUPADOS'],all_stations['NUM_LIBRES'] ))
+    all_stations["OCUPACION"] = list(map(lambda o,l: o/(o+l),all_stations["NUM_OCUPADOS"],all_stations["NUM_LIBRES"] ))
     all_stations.to_csv(datafilespath + "/allstationsalltime.csv",encoding='utf-8')
 
 
